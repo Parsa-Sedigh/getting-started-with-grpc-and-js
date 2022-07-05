@@ -1,0 +1,11 @@
+{
+  "name": "getting-started-with-grpc-and-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Parsa-Sedigh/getting-started-with-grpc-and-js.git",
+  "author": "parsa <parsa.sedigh78@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.6.7"
+  }
+}

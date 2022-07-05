@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+// Define message types
+message EchoMessage {
+    string value = 1;
+
+}
+
+// Define services and RPCs
+service EchoService {
+    rpc EchoUnary (EchoMessage) returns (EchoMessage);
+    rpc EchoClientStream (stream EchoMessage) returns (EchoMessage);
+    rpc EchoServerStream (EchoMessage) returns (stream EchoMessage);
+    rpc EchoBidiStream (stream EchoMessage) returns (stream EchoMessage);
+}

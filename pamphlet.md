@@ -1,4 +1,4 @@
-Video url: [video](https://www.youtube.com/watch?v=fl9AZieRUaw&ab_channel=node.js)
+Video url: [nodejs conf 2019 - Getting Started with gRPC and JavaScript - Colin Ihrig, Joyent](https://www.youtube.com/watch?v=fl9AZieRUaw&ab_channel=node.js)
 
 The thing that makes grpc unique is that it leverages HTTP2, so HTTP1 is not gonna be an option.
 

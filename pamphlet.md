@@ -1,4 +1,4 @@
-Video url: https://www.youtube.com/watch?v=fl9AZieRUaw&ab_channel=node.js
+Video url: [video](https://www.youtube.com/watch?v=fl9AZieRUaw&ab_channel=node.js)
 
 The thing that makes grpc unique is that it leverages HTTP2, so HTTP1 is not gonna be an option.
 
@@ -90,8 +90,83 @@ using some of the features that aren't supported yet in @grpc/grpc-js .
 
 About #4:
 Whenever you go to require or import @grpc/grpc-js , it will do a version check, so you have to be using ^8.13.0 || >=10.0 .
-This library has no runtime dependencies other than semvr which is to check the dependency string. So you don't have to worry about 
+This library has no runtime dependencies other than semver which is to check the dependency string. So you don't have to worry about 
 people slipping viruses into your code.
 
-## Example unary client
-TODO: Till 12:30
+Look at 1-4 example files.
+
+## @grpc/proto-loader:
+It's another module that we use to actually load protofiles into your app. The original grpc module, the compiled addon with the C-core, actually supports loading
+these things by default in the module itself, but when they moved over the grpc-js, they wanted separate out that functionality(maybe the reason for that
+was to create a separate package for protofiles that could be versioned independently without messing with rest of the module). 
+
+This package under the hood uses `protobufjs`
+
+- `@grpc/grpc-js` drops support for loading .proto files
+- uses `protobufjs` for handling protocol buffers
+
+Look at 5th file.
+
+If you have a big number that won't fit into a typical JS number, you might want it encode it in string and ... .
+
+## introducing grpc-server-js:
+@grpc/grpc-js was great but they wanted to have a mock server because remember the original use case was trying to talk to golang services.
+So there is a `grpc-server-js` for grpc with js on server.
+
+- unofficial module warning
+- pure js gRPC server implementation
+- API compatible with grpc's server
+- only production dependency is @grpc/grpc-js
+  - shares status constants and metadata class
+- lead to several upstream performance improvements
+
+
+Look at 6-example-server.js .
+
+You can generate the proto types for usage by running: 
+`./node_modules/.bin/proto-loader-gen-types --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=proto/ proto/*.proto`
+
+## testing `grpc-server-js`:
+The author of `grpc-server-js`, did these:
+- ported many grpc tests to ensure compatibility
+- added more tests where coverage was missing
+- uncovered a handful of significant bugs in @grpc/grpc-js
+- ~95% test coverage
+
+## server improvements:
+Author was able to go back and make some improvements to the upstream module. The upstream module authors were focused on the client, they didn't have
+a server implementation.
+
+V8 doesn't really like the `delete` operator. It changes the shape of the class under the hood and so it causes your code to slow down.
+
+- ignore reserved headers during header parsing
+  - saves `delete` operations in client
+  - saves extra loop on each request in server
+- code simplification/modernization
+- drop `loadash`
+- ~15-20% improvement in server req/sec
+- upstreamed `grpc-server-js` in june 2019
+
+I guess now the module is merged to ``.
+
+The performance difference between the pure js implementation and compiled addon, is that grpc-server-js is slower than grpc addon.
+
+## pain points:
+- grpc support in larger system architecture: For example a load balancer doesn't know how to load balance grpc traffic. You can't just use an L4 load balancer,
+  you need an L7 that understands grpc. 
+- benchmarking grpc vs non-grpc servers: You can't just use a normal http load generator to throw the same traffic at an express server and then also grpc server.
+  So it's hard to compare those servers.
+- nodejs grpc community seems quiet
+- feels more like a google project than a comunity one 
+- gRPC-web without envoy would be nice
+
+## future work:
+- improve feature parity between grpc-js and the grpc module(interceptors(their version of middleware), more server options)
+- continued performance and stability work
+- integration of nodejs workers
+- gRPC-web in-progress nodejs proxy
+- tooling and nodejs ecosystem integration
+
+
+
+

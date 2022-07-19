@@ -6,6 +6,8 @@
   "author": "parsa <parsa.sedigh78@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@grpc/grpc-js": "^1.6.7"
+    "@grpc/grpc-js": "^1.6.7",
+    "@grpc/proto-loader": "^0.7.0",
+    "grpc-server-js": "^0.5.0"
   }
 }
